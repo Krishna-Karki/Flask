@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -37,6 +37,24 @@ def products():
     allTodo = Todo.query.all()
     print(allTodo)
     return 'this is products page'
+
+
+@app.route('/update')
+def update():
+    allTodo = Todo.query.all()
+    print(allTodo)
+    
+@app.route('/delete/<int:sn>')
+def delete(sn):
+    # Fetch the Todo with the correct primary key
+    todo = Todo.query.filter_by(sn=sn).first()
+    if todo:
+        db.session.delete(todo)
+        db.session.commit()
+        return redirect("/")
+    else:
+        return f"Todo with id {sn} does not exist", 404
+
 
 if __name__ == "__main__":
     with app.app_context():
